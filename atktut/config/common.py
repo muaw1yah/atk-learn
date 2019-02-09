@@ -23,7 +23,8 @@ class Common(Configuration):
         'django_filters',            # for filtering rest endpoints
 
         # Your apps
-        'learn-python.users',
+        'atktut.users',
+        'atktut.course',
 
     )
 
@@ -39,9 +40,9 @@ class Common(Configuration):
     )
 
     ALLOWED_HOSTS = ["*"]
-    ROOT_URLCONF = 'learn-python.urls'
+    ROOT_URLCONF = 'atktut.urls'
     SECRET_KEY = os.getenv('DJANGO_SECRET_KEY')
-    WSGI_APPLICATION = 'learn-python.wsgi.application'
+    WSGI_APPLICATION = 'atktut.wsgi.application'
 
     # Email
     EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'

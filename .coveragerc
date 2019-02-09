@@ -5,6 +5,6 @@ omit = *migrations*,
        *test*,
        *admin*,
        ./manage.py,
-       ./learn-python/config/*,
-       ./learn-python/wsgi.py,
+       ./atktut/config/*,
+       ./atktut/wsgi.py,
        *__init__*
