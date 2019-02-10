@@ -14,13 +14,13 @@ script:
 after_success:
   - if [ "$TRAVIS_BRANCH" == "master" ]; then
     docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com;
-    docker tag web registry.heroku.com/learn-python-prod/web;
-    docker push registry.heroku.com/learn-python-prod/web;
+    docker tag web registry.heroku.com/atktut-prod/web;
+    docker push registry.heroku.com/atktut-prod/web;
     fi
   - if [ "$TRAVIS_BRANCH" == "qa" ]; then
     docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com;
-    docker tag web registry.heroku.com/learn-python-qa/web;
-    docker push registry.heroku.com/learn-python-qa/web;
+    docker tag web registry.heroku.com/atktut-qa/web;
+    docker push registry.heroku.com/atktut-qa/web;
     fi
 
 notifications:

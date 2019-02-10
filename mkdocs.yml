@@ -1,6 +1,6 @@
-site_name: learn-python
+site_name: atktut
 site_description: Its all about a Weissman score > 5.0
-repo_url: https://github.com/namadi/learn-python
+repo_url: https://github.com/namadi/atktut
 site_dir: site
 copyright: Copyright &copy; 2019, <a href="https://github.com/namadi">namadi</a>.
 dev_addr: 0.0.0.0:8001

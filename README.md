@@ -1,9 +1,9 @@
-# learn-python
+# atktut
 
-[![Build Status](https://travis-ci.org/namadi/learn-python.svg?branch=master)](https://travis-ci.org/namadi/learn-python)
+[![Build Status](https://travis-ci.org/namadi/atktut.svg?branch=master)](https://travis-ci.org/namadi/atktut)
 [![Built with](https://img.shields.io/badge/Built_with-Cookiecutter_Django_Rest-F7B633.svg)](https://github.com/agconti/cookiecutter-django-rest)
 
-Its all about a Weissman score > 5.0. Check out the project's [documentation](http://namadi.github.io/learn-python/).
+Its all about a Weissman score > 5.0. Check out the project's [documentation](http://namadi.github.io/atktut/).
 
 # Prerequisites
 
@@ -31,31 +31,31 @@ Deployment is automated via Travis. When builds pass on the master or qa branch,
 Initialize the production server:
 
 ```
-heroku create learn-python-prod --remote prod && \
-    heroku addons:create newrelic:wayne --app learn-python-prod && \
-    heroku addons:create heroku-postgresql:hobby-dev --app learn-python-prod && \
+heroku create atktut-prod --remote prod && \
+    heroku addons:create newrelic:wayne --app atktut-prod && \
+    heroku addons:create heroku-postgresql:hobby-dev --app atktut-prod && \
     heroku config:set DJANGO_SECRET_KEY=`openssl rand -base64 32` \
         DJANGO_AWS_ACCESS_KEY_ID="Add your id" \
         DJANGO_AWS_SECRET_ACCESS_KEY="Add your key" \
-        DJANGO_AWS_STORAGE_BUCKET_NAME="learn-python-prod" \
+        DJANGO_AWS_STORAGE_BUCKET_NAME="atktut-prod" \
         DJANGO_CONFIGURATION="Production" \
-        DJANGO_SETTINGS_MODULE="learn-python.config" \
-        --app learn-python-prod
+        DJANGO_SETTINGS_MODULE="atktut.config" \
+        --app atktut-prod
 ```
 
 Initialize the qa server:
 
 ```
-heroku create learn-python-qa --remote qa && \
-    heroku addons:create newrelic:wayne --app learn-python-qa && \
-    heroku addons:create heroku-postgresql:hobby-dev --app learn-python-qa && \
+heroku create atktut-qa --remote qa && \
+    heroku addons:create newrelic:wayne --app atktut-qa && \
+    heroku addons:create heroku-postgresql:hobby-dev --app atktut-qa && \
     heroku config:set DJANGO_SECRET_KEY=`openssl rand -base64 32` \
         DJANGO_AWS_ACCESS_KEY_ID="Add your id" \
         DJANGO_AWS_SECRET_ACCESS_KEY="Add your key" \
-        DJANGO_AWS_STORAGE_BUCKET_NAME="learn-python-qa" \
+        DJANGO_AWS_STORAGE_BUCKET_NAME="atktut-qa" \
         DJANGO_CONFIGURATION="Production" \
-        DJANGO_SETTINGS_MODULE="learn-python.config" \
-        --app learn-python-qa
+        DJANGO_SETTINGS_MODULE="atktut.config" \
+        --app atktut-qa
 ```
 
 Securely add your Heroku credentials to Travis so that it can automatically deploy your changes:
