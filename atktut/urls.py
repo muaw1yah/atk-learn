@@ -13,9 +13,9 @@ router.register(r'users', UserCreateViewSet)
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('api/v1/', include(router.urls)),
+    path('api/v1/', include('atktut.users.urls')),
+    path('api/v1/', include('atktut.course.urls')),
     path('api-token-auth/', views.obtain_auth_token),
-    path('', include('atktut.course.urls')),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # the 'api-root' from django rest-frameworks default router
