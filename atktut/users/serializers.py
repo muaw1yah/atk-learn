@@ -11,6 +11,15 @@ class UserSerializer(serializers.ModelSerializer):
 
 
 class CreateUserSerializer(serializers.ModelSerializer):
+    # def validate(self, attrs):
+    #     username = attrs.get("username")
+    #     first_name = attrs.get("first_name")
+    #     last_name = attrs.get("last_name")
+    #     email = attrs.get("email")
+    #     password = attrs.get("password")
+    #     confirm = attrs.get("confirm")
+
+    #     return super().validate(attrs)
 
     def create(self, validated_data):
         # call create_user on user object. Without this

@@ -1,6 +1,6 @@
 from django.db import models
 from atktut.users.models import User
-from commons.models import AbstractModel
+from atktut.commons.models import AbstractModel
 
 # Create your models here.
 

@@ -4,14 +4,14 @@ from django.conf.urls.static import static
 from django.contrib import admin
 from django.views.generic.base import RedirectView
 from rest_framework.routers import DefaultRouter
-from rest_framework.authtoken import views
+from rest_framework_jwt.views import obtain_jwt_token
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/', include('atktut.users.urls')),
-    path('api/v1/', include('course.urls')),
-    path('api/v1/', include('labari.urls')),
-    path('api-token-auth/', views.obtain_auth_token),
+    path('api/v1/', include('atktut.course.urls')),
+    path('api/v1/', include('atktut.labari.urls')),
+    path('api/v1/token-auth/', obtain_jwt_token),
     path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 
     # the 'api-root' from django rest-frameworks default router

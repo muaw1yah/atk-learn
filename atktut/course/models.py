@@ -1,7 +1,5 @@
 from django.db import models
-from commons.models import AbstractModel
-
-# Create your models here.
+from atktut.commons.models import AbstractModel
 
 class Course(AbstractModel):
     id = models.AutoField(primary_key=True)

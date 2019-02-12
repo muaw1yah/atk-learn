@@ -1,10 +1,7 @@
 from .models import Labari
 from rest_framework import viewsets, permissions
 from .serializers import LabariSerializer
-from rest_framework import renderers
-from rest_framework.decorators import action
-from rest_framework.response import Response
-from commons.permissions import IsUserOrReadOnly
+from atktut.commons.permissions import IsUserOrReadOnly
 
 
 class LabariViewSet(viewsets.ModelViewSet):
