@@ -24,7 +24,8 @@ class Common(Configuration):
 
         # Your apps
         'atktut.users',
-        'atktut.course',
+        'course',
+        'labari',
 
     )
 

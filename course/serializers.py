@@ -30,7 +30,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
 
 class CourseDetailSerializer(serializers.ModelSerializer):
-    units = UnitSerializer(many=True, read_only=True)
+    units = UnitDetailSerializer(many=True, read_only=True)
 
     class Meta:
         model = Course

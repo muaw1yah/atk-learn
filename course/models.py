@@ -1,14 +1,7 @@
 from django.db import models
+from commons.models import AbstractModel
 
 # Create your models here.
-class AbstractModel(models.Model):
-    created = models.DateTimeField(auto_now_add=True)
-    updated = models.DateTimeField(auto_now=True)
-
-    class Meta:
-         abstract = True
-
-
 
 class Course(AbstractModel):
     id = models.AutoField(primary_key=True)
