@@ -26,6 +26,7 @@ class Common(Configuration):
         # Your apps
         'atktut.users',
         'atktut.course',
+        'atktut.questions',
         'atktut.labari',
 
     )

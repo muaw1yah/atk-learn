@@ -31,8 +31,8 @@ unit_detail = UnitDetailViewSet.as_view({
 })
 
 urlpatterns = [
-    path(r'course/', course_list, name='course-list'),
-    path(r'course/<int:pk>/', course_detail, name='course-detail'),
+    path(r'courses/', course_list, name='course-list'),
+    path(r'courses/<int:pk>/', course_detail, name='course-detail'),
     path(r'units/', unit_list, name='unit-list'),
     path(r'units/<int:pk>/', unit_detail, name='unit-detail'),
 ] + router.urls

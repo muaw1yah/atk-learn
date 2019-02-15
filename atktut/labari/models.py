@@ -5,7 +5,6 @@ from atktut.commons.models import AbstractModel
 # Create your models here.
 
 class Labari(AbstractModel):
-    id = models.AutoField(primary_key=True)
     title = models.CharField(max_length=256)
     description = models.TextField()
     keywords = models.CharField(max_length=516)

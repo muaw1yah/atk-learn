@@ -1,7 +1,7 @@
 from .models import Labari
 from rest_framework import viewsets, permissions
 from .serializers import LabariSerializer
-from atktut.commons.permissions import IsUserOrReadOnly
+from atktut.config.permissions import IsUserOrReadOnly
 
 
 class LabariViewSet(viewsets.ModelViewSet):
