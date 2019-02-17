@@ -13,7 +13,7 @@ class QuestionViewSet(viewsets.ModelViewSet):
     """
     queryset = Question.objects.all()
     serializer_class = QuestionSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrReadOnly, )
+    permission_classes = (permissions.IsAdminUser, )
 
 
 class AnswerViewSet(viewsets.ModelViewSet):
@@ -22,7 +22,7 @@ class AnswerViewSet(viewsets.ModelViewSet):
     """
     queryset = Answer.objects.all()
     serializer_class = AnswerSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrReadOnly, )
+    permission_classes = (permissions.IsAdminUser, )
 
     # def perform_create(self, serializer):
     #     serializer.save(owner=self.request.user)

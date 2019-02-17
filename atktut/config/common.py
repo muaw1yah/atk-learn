@@ -22,7 +22,8 @@ class Common(Configuration):
         'rest_framework.authtoken',  # token authentication
         'django_filters',            # for filtering rest endpoints
         'corsheaders',               # to allow cross origin
-
+        'generic_relations',         # for generic relations serialization
+        
         # Your apps
         'atktut.users',
         'atktut.course',

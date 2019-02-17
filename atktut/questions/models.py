@@ -1,6 +1,7 @@
 from django.db import models
 from atktut.commons.models import AbstractModel
 from atktut.course.models import Lesson
+from django.contrib.contenttypes.fields import GenericRelation
 
 
 # Create your models here.
@@ -17,7 +18,7 @@ class Question(AbstractModel):
     )
     content = models.TextField()
     question_type = models.CharField(max_length=2, choices=QUESTION_TYPE)
-    lesson = models.ForeignKey(Lesson, related_name='questions', on_delete=models.CASCADE)
+    lesson = GenericRelation(Lesson, related_query_name='questions')
 
     def __str__(self):
         return '%s' % (self.question_type)
