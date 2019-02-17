@@ -49,10 +49,14 @@ class Common(Configuration):
     CORS_ORIGIN_WHITELIST = (
         'localhost:3000',
         'atk.atakaice.com',
+        'koyi.atakaice.com',
+        '*',
     )
     CORS_ORIGIN_REGEX_WHITELIST = (
         'localhost:3000',
         'atk.atakaice.com',
+        'koyi.atakaice.com',
+        '*',
     )
 
     ALLOWED_HOSTS = ["*"]
