@@ -1,6 +1,5 @@
-from django.urls import include, path
-from rest_framework import routers, renderers
-
+from django.urls import path
+from rest_framework import routers
 from .views import CourseViewSet, UnitViewSet, LessonViewSet, UnitDetailViewSet, CourseDetailViewSet
 
 router = routers.SimpleRouter()

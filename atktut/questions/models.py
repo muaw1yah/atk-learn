@@ -3,7 +3,6 @@ from atktut.commons.models import AbstractModel
 from atktut.course.models import Lesson
 from django.contrib.contenttypes.fields import GenericRelation
 
-
 # Create your models here.
 class Question(AbstractModel):
     TRUEFALSE = 'TF'
@@ -22,8 +21,6 @@ class Question(AbstractModel):
 
     def __str__(self):
         return '%s' % (self.question_type)
-
-
 
 class Answer(AbstractModel):
     content = models.CharField(max_length=256)

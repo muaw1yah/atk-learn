@@ -11,6 +11,6 @@ class LabariViewSet(viewsets.ModelViewSet):
     queryset = Labari.objects.all()
     serializer_class = LabariSerializer
     permission_classes = (permissions.IsAuthenticatedOrReadOnly, IsUserOrReadOnly, )
-    
+
     def perform_create(self, serializer):
         serializer.save(author=self.request.user)

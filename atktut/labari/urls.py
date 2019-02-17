@@ -1,5 +1,4 @@
-from django.urls import include, path
-from rest_framework import routers, renderers
+from django.urls import path
 from .views import LabariViewSet
 
 labari_list = LabariViewSet.as_view({

@@ -1,13 +1,12 @@
-from rest_framework import viewsets, mixins, permissions
+from rest_framework import viewsets, mixins
 from rest_framework.permissions import AllowAny, IsAdminUser
 from .models import User
 from .permissions import IsUserOrReadOnly
 from .serializers import CreateUserSerializer, UserSerializer
 
-
 class UserDetailViewSet(mixins.RetrieveModelMixin,
-                  mixins.UpdateModelMixin,
-                  viewsets.GenericViewSet):
+                        mixins.UpdateModelMixin,
+                        viewsets.GenericViewSet):
     """
     Updates and retrieves user accounts
     """

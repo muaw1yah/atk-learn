@@ -6,18 +6,15 @@ from django.db import models
 from atktut.config.models import AbstractModel
 from atktut.users.models import User
 
-
 class Course(AbstractModel):
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=1028, null=True)
-    
+
     class Meta:
         ordering = ['created']
 
     def __str__(self):
         return '%s' % (self.name)
-
-
 
 class Unit(AbstractModel):
     name = models.CharField(max_length=256)
@@ -32,8 +29,6 @@ class Unit(AbstractModel):
     def __str__(self):
         return '%d: %s' % (self.order, self.name)
 
-
-
 class Lesson(AbstractModel):
     name = models.CharField(max_length=256)
     order = models.IntegerField(unique=True)
@@ -43,15 +38,12 @@ class Lesson(AbstractModel):
     object_id = models.PositiveIntegerField()
     unit_object = GenericForeignKey('content_type', 'object_id')
 
-
     class Meta:
         unique_together = ('unit', 'order', )
         ordering = ['order']
 
     def __str__(self):
         return '%d: %s' % (self.order, self.name)
-
-
 
 class Lecture(AbstractModel):
     content = models.TextField()
@@ -60,12 +52,11 @@ class Lecture(AbstractModel):
     def __str__(self):
         return '%d: %d' % (self.lesson.name)
 
-
-
 class Progress(AbstractModel):
     value = models.IntegerField(default=0)
     course = models.ForeignKey(Course, related_name='progress', on_delete=models.CASCADE)
-    lesson = models.ForeignKey(Lesson, related_name='progress', on_delete=models.CASCADE, blank=True, null=True)
+    lesson = models.ForeignKey(Lesson, related_name='progress',
+                               on_delete=models.CASCADE, blank=True, null=True)
     owner = models.ForeignKey(User, related_name='progress', on_delete=models.CASCADE)
 
     class Meta:
