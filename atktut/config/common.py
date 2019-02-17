@@ -21,10 +21,14 @@ class Common(Configuration):
         'rest_framework',            # utilities for rest apis
         'rest_framework.authtoken',  # token authentication
         'django_filters',            # for filtering rest endpoints
+        'corsheaders',               # to allow cross origin
+        'generic_relations',         # for generic relations serialization
 
         # Your apps
         'atktut.users',
         'atktut.course',
+        'atktut.questions',
+        'atktut.labari',
 
     )
 
@@ -32,11 +36,27 @@ class Common(Configuration):
     MIDDLEWARE = (
         'django.middleware.security.SecurityMiddleware',
         'django.contrib.sessions.middleware.SessionMiddleware',
+        'corsheaders.middleware.CorsMiddleware',
         'django.middleware.common.CommonMiddleware',
         'django.middleware.csrf.CsrfViewMiddleware',
         'django.contrib.auth.middleware.AuthenticationMiddleware',
         'django.contrib.messages.middleware.MessageMiddleware',
         'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    )
+
+    CORS_ORIGIN_ALLOW_ALL = True
+    CORS_ALLOW_CREDENTIALS = True
+    CORS_ORIGIN_WHITELIST = (
+        'localhost:3000',
+        'atk.atakaice.com',
+        'koyi.atakaice.com',
+        '*',
+    )
+    CORS_ORIGIN_REGEX_WHITELIST = (
+        'localhost:3000',
+        'atk.atakaice.com',
+        'koyi.atakaice.com',
+        '*',
     )
 
     ALLOWED_HOSTS = ["*"]
@@ -196,7 +216,8 @@ class Common(Configuration):
             'rest_framework.permissions.IsAuthenticated',
         ],
         'DEFAULT_AUTHENTICATION_CLASSES': (
+            'rest_framework_jwt.authentication.JSONWebTokenAuthentication',
             'rest_framework.authentication.SessionAuthentication',
-            'rest_framework.authentication.TokenAuthentication',
+            'rest_framework.authentication.BasicAuthentication',
         )
     }
