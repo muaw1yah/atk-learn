@@ -1,9 +1,6 @@
 from rest_framework import mixins, viewsets
-from rest_framework.permissions import (AllowAny, IsAdminUser,
-                                        IsAuthenticatedOrReadOnly)
-
+from rest_framework.permissions import (AllowAny, IsAdminUser)
 from .models import User
-from .permissions import IsUserOrReadOnly
 from .serializers import CreateUserSerializer, UserSerializer
 
 

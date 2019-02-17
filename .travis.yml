@@ -1,30 +1,25 @@
 sudo: required
 language: python
 services:
-  - docker
+- docker
 python:
-  - "3.6"
+- '3.6'
 before_script:
-  - docker-compose build
+- docker-compose build
 script:
-  - docker-compose run --rm web bash -c "flake8 . &&
-                                         python wait_for_postgres.py &&
-                                         ./manage.py test"
-
+- docker-compose run --rm web bash -c "flake8 . && python wait_for_postgres.py &&
+  ./manage.py test"
 after_success:
-  - if [ "$TRAVIS_BRANCH" == "master" ]; then
-    docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com;
-    docker tag web registry.heroku.com/atktut-prod/web;
-    docker push registry.heroku.com/atktut-prod/web;
-    fi
-  - if [ "$TRAVIS_BRANCH" == "qa" ]; then
-    docker login --username=_ --password="$HEROKU_AUTH_TOKEN" registry.heroku.com;
-    docker tag web registry.heroku.com/atktut-qa/web;
-    docker push registry.heroku.com/atktut-qa/web;
-    fi
-
+- if [ "$TRAVIS_BRANCH" == "master" ]; then docker login --username=_ --password="$HEROKU_AUTH_TOKEN"
+  registry.heroku.com; docker tag web registry.heroku.com/atktut-prod/web; docker
+  push registry.heroku.com/atktut-prod/web; fi
+- if [ "$TRAVIS_BRANCH" == "qa" ]; then docker login --username=_ --password="$HEROKU_AUTH_TOKEN"
+  registry.heroku.com; docker tag web registry.heroku.com/atktut-qa/web; docker push
+  registry.heroku.com/atktut-qa/web; fi
 notifications:
   email: false
-
 cache:
   pip: true
+env:
+  global:
+    secure: KrhS1gCqjgqKW7A7Fcc475ipctrscoQH1CHiIIPuRKj5+YGcBpY05IIl9zj/p/yNkTn9D9NA7JTVVeDyNbwIUP0xLQqHiD8V2bQUZoM9qoqyBAOdPhXODXjHQQ6c5ACe02So08SCGEFlzSKguce9NgggAPjpHwW7vbk/KBKsA5+rILSE2S2vapKYEYnlpFK5RQ5JZ31OxkdMZpiUQDPOgEV+Zih2pTCfcsZ8i/QI27QRJVJDUJs+SF4CLY418Ey+3t1V3c3YyNTfOZzlYj6SBhNVDjaoYABcHt1fbg77hKQ72cNVG3vDB5qbgL3HZaOGtdyUGtqOnbUpha73EcY18oohfEqrpoL12OURnusElEIE9UBwgiUp2EKLcr0cEBo/cE5nIJ84ZBAiD1X6Z50RHpiC3EZ9eI6Bmv+KcWSr3UDvKkeO3yZCfuk0Rwo4KEVRFVIkhjMqz1D1JopBmLwc4HfiWltvCaVtqTXf1C2LOvUSj6ymbYHDqumbYI+TtCe9Gg1wYxqliDcLSs6leElnk866iPzh0OvLDnUoC1GsJshiGBmwYc674ZehZ2JurhwpgKaBlgREVZ1ts/W6ZCRzzL61tb5wFNHk3GBtxhj7TKltzqINgTSeg1FfWcZD1V70sigJ1t3zjxDVf4KFLWOLOrm5OEpAdMWen+pbs2ytzjU=
