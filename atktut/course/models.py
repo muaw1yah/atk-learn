@@ -50,7 +50,7 @@ class Lecture(AbstractModel):
     lesson = GenericRelation(Lesson, related_query_name='lectures')
 
     def __str__(self):
-        return '%d: %d' % (self.lesson.name)
+        return '%s' % (self.lesson.content)
 
 class Progress(AbstractModel):
     value = models.IntegerField(default=0)

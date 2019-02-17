@@ -20,7 +20,7 @@ class Question(AbstractModel):
     lesson = GenericRelation(Lesson, related_query_name='questions')
 
     def __str__(self):
-        return '%s' % (self.question_type)
+        return '%s' % (self.content)
 
 class Answer(AbstractModel):
     content = models.CharField(max_length=256)
