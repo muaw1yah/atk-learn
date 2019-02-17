@@ -23,7 +23,7 @@ class Common(Configuration):
         'django_filters',            # for filtering rest endpoints
         'corsheaders',               # to allow cross origin
         'generic_relations',         # for generic relations serialization
-        
+
         # Your apps
         'atktut.users',
         'atktut.course',
@@ -48,9 +48,11 @@ class Common(Configuration):
     CORS_ALLOW_CREDENTIALS = True
     CORS_ORIGIN_WHITELIST = (
         'localhost:3000',
+        'atk.atakaice.com',
     )
     CORS_ORIGIN_REGEX_WHITELIST = (
         'localhost:3000',
+        'atk.atakaice.com',
     )
 
     ALLOWED_HOSTS = ["*"]
