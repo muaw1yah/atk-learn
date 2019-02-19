@@ -46,11 +46,22 @@ class Lesson(AbstractModel):
         return '%d: %s' % (self.order, self.name)
 
 class Lecture(AbstractModel):
-    content = models.TextField()
+    HTML = 'HTML'
+    VIDEO = 'VID'
+    PICTURE = 'PIC'
+    LECTURE_TYPE = (
+        (HTML, 'HTML'),
+        (VIDEO, 'Video'),
+        (PICTURE, 'Picture'),
+    )
+    lecture_type = models.CharField(default=HTML, max_length=5, choices=LECTURE_TYPE)
+    html = models.TextField(blank=True, null=True)
+    video = models.URLField(blank=True, null=True)
+    picture = models.URLField(blank=True, null=True)
     lesson = GenericRelation(Lesson, related_query_name='lectures')
 
     def __str__(self):
-        return '%s' % (self.content)
+        return '%d %s' % (self.pk, self.lecture_type)
 
 class Progress(AbstractModel):
     value = models.IntegerField(default=0)
