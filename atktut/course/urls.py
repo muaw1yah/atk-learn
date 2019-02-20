@@ -1,9 +1,10 @@
 from django.urls import path
 from rest_framework import routers
-from .views import CourseViewSet, UnitViewSet, LessonViewSet, UnitDetailViewSet, CourseDetailViewSet
+from .views import CourseViewSet, UnitViewSet, LessonViewSet, UnitDetailViewSet, CourseDetailViewSet, LectureViewSet
 
 router = routers.SimpleRouter()
 router.register(r'lessons', LessonViewSet)
+router.register(r'lectures', LectureViewSet);
 
 course_list = CourseViewSet.as_view({
     'get': 'list',

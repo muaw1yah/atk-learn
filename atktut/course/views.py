@@ -1,7 +1,15 @@
-from .models import Course, Unit, Lesson
+from .models import Course, Unit, Lesson, Lecture
 from rest_framework import viewsets, permissions
 from .serializers import (CourseSerializer, UnitSerializer, UnitDetailSerializer,
-                          LessonSerializer, CourseDetailSerializer)
+                          LessonSerializer, CourseDetailSerializer, LectureSerializer)
+
+class LectureViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows courses to be viewed or edited.
+    """
+    queryset = Lecture.objects.all()
+    serializer_class = LectureSerializer
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 class CourseViewSet(viewsets.ModelViewSet):
     """
