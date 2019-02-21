@@ -5,10 +5,14 @@ from atktut.questions.models import Question
 from atktut.questions.serializers import QuestionSerializer
 
 class CourseSerializer(serializers.ModelSerializer):
+    unit_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', )
+        fields = ('id', 'name', 'description', 'unit_count')
+
+    def get_unit_count(self, obj):
+        return obj.units.count()
 
 class UnitSerializer(serializers.ModelSerializer):
 

@@ -18,7 +18,7 @@ class Course(AbstractModel):
 
 class Unit(AbstractModel):
     name = models.CharField(max_length=256)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     description = models.CharField(blank=True, null=True, max_length=1028)
     course = models.ForeignKey(Course, related_name='units', on_delete=models.CASCADE)
 
@@ -31,7 +31,7 @@ class Unit(AbstractModel):
 
 class Lesson(AbstractModel):
     name = models.CharField(max_length=256)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     description = models.CharField(blank=True, null=True, max_length=1028)
     unit = models.ForeignKey(Unit, related_name='lessons', on_delete=models.CASCADE)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
@@ -56,7 +56,7 @@ class Lecture(AbstractModel):
     )
     lecture_type = models.CharField(default=HTML, max_length=5, choices=LECTURE_TYPE)
     html = models.TextField(blank=True, null=True)
-    video = models.URLField(blank=True, null=True)
+    video = models.CharField(blank=True, null=True, max_length=128)
     picture = models.URLField(blank=True, null=True)
     lesson = GenericRelation(Lesson, related_query_name='lectures')
 
