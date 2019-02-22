@@ -1,8 +1,12 @@
+from django.contrib.contenttypes.models import ContentType
 from rest_framework import serializers
-from .models import Course, Unit, Lesson, Progress, Lecture
-from generic_relations.relations import GenericRelatedField
+
 from atktut.questions.models import Question
 from atktut.questions.serializers import QuestionSerializer
+from generic_relations.relations import GenericRelatedField
+
+from .models import Course, Lecture, Lesson, Progress, Unit
+
 
 class CourseSerializer(serializers.ModelSerializer):
     unit_count = serializers.SerializerMethodField()
@@ -34,11 +38,17 @@ class LessonSerializer(serializers.ModelSerializer):
     unit_object = GenericRelatedField({
         Lecture: LectureSerializer(),
         Question: QuestionSerializer()
-    })
+    }, read_only=True)
 
     class Meta:
         model = Lesson
-        fields = ('id', 'name', 'order', 'description', 'unit', 'unit_object', )
+        fields = ('id', 'name', 'order', 'description', 'unit', 'content_type', 'object_id', 'unit_object',)
+        read_only_fields = ('unit_object',)
+    
+    content_type = serializers.SlugRelatedField(
+        queryset=ContentType.objects.all(),
+        slug_field='model',
+    )
 
 class UnitDetailSerializer(serializers.ModelSerializer):
     course = CourseSerializer(many=False, read_only=True)

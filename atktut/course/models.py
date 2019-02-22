@@ -45,6 +45,12 @@ class Lesson(AbstractModel):
     def __str__(self):
         return '%d: %s' % (self.order, self.name)
 
+    def to_representation(self, obj):
+        return obj.model
+
+    def to_internal_value(self, data):
+        return ContentType.objects.get(model=data)
+
 class Lecture(AbstractModel):
     HTML = 'HTML'
     VIDEO = 'VID'
@@ -62,6 +68,12 @@ class Lecture(AbstractModel):
 
     def __str__(self):
         return '%d %s' % (self.pk, self.lecture_type)
+
+    def to_representation(self, obj):
+        return obj.model
+
+    def to_internal_value(self, data):
+        return ContentType.objects.get(model=data)
 
 class Progress(AbstractModel):
     value = models.IntegerField(default=0)
