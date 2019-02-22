@@ -223,7 +223,8 @@ class Common(Configuration):
         )
     }
 
-    JWT_AUTH = {
+
+JWT_AUTH = {
     'JWT_ENCODE_HANDLER':
     'rest_framework_jwt.utils.jwt_encode_handler',
 
@@ -256,5 +257,4 @@ class Common(Configuration):
 
     'JWT_AUTH_HEADER_PREFIX': 'JWT',
     'JWT_AUTH_COOKIE': None,
-
 }

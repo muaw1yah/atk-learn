@@ -44,7 +44,7 @@ class LessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ('id', 'name', 'order', 'description', 'unit', 'content_type', 'object_id', 'unit_object',)
         read_only_fields = ('unit_object',)
-    
+
     content_type = serializers.SlugRelatedField(
         queryset=ContentType.objects.all(),
         slug_field='model',
