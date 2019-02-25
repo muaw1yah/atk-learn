@@ -51,12 +51,14 @@ class Common(Configuration):
         'localhost:3000',
         'atk.atakaice.com',
         'koyi.atakaice.com',
+        'atktut-dev.herokuapp.com',
         '*',
     )
     CORS_ORIGIN_REGEX_WHITELIST = (
         'localhost:3000',
         'atk.atakaice.com',
         'koyi.atakaice.com',
+        'atktut-dev.herokuapp.com',
         '*',
     )
 

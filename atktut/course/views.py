@@ -75,7 +75,7 @@ class LessonViewSet(viewsets.ModelViewSet):
             progress = Progress.objects.get(owner=request.user, course=lesson.course)
         except Exception:
             pass
-        if not progress and lesson.course:
+        if not progress:
             progress = Progress.objects.create(
                 value=1,
                 unit=lesson.unit,
