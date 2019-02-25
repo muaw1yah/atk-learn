@@ -6,6 +6,7 @@ from django.db import models
 from atktut.config.models import AbstractModel
 from atktut.users.models import User
 
+
 class Course(AbstractModel):
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=1028, null=True)
@@ -13,12 +14,9 @@ class Course(AbstractModel):
     class Meta:
         ordering = ['created']
 
-    def __str__(self):
-        return '%s' % (self.name)
-
 class Unit(AbstractModel):
     name = models.CharField(max_length=256)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     description = models.CharField(blank=True, null=True, max_length=1028)
     course = models.ForeignKey(Course, related_name='units', on_delete=models.CASCADE)
 
@@ -26,14 +24,13 @@ class Unit(AbstractModel):
         unique_together = ('course', 'order',)
         ordering = ['order']
 
-    def __str__(self):
-        return '%d: %s' % (self.order, self.name)
-
 class Lesson(AbstractModel):
     name = models.CharField(max_length=256)
-    order = models.IntegerField(unique=True)
+    order = models.IntegerField()
     description = models.CharField(blank=True, null=True, max_length=1028)
     unit = models.ForeignKey(Unit, related_name='lessons', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name='lessons_course',
+                               on_delete=models.CASCADE, blank=True, null=True)
     content_type = models.ForeignKey(ContentType, on_delete=models.CASCADE)
     object_id = models.PositiveIntegerField()
     unit_object = GenericForeignKey('content_type', 'object_id')
@@ -44,6 +41,12 @@ class Lesson(AbstractModel):
 
     def __str__(self):
         return '%d: %s' % (self.order, self.name)
+
+    def to_representation(self, obj):
+        return obj.model
+
+    def to_internal_value(self, data):
+        return ContentType.objects.get(model=data)
 
 class Lecture(AbstractModel):
     HTML = 'HTML'
@@ -56,23 +59,28 @@ class Lecture(AbstractModel):
     )
     lecture_type = models.CharField(default=HTML, max_length=5, choices=LECTURE_TYPE)
     html = models.TextField(blank=True, null=True)
-    video = models.URLField(blank=True, null=True)
+    video = models.CharField(blank=True, null=True, max_length=128)
     picture = models.URLField(blank=True, null=True)
     lesson = GenericRelation(Lesson, related_query_name='lectures')
 
     def __str__(self):
         return '%d %s' % (self.pk, self.lecture_type)
 
+    def to_representation(self, obj):
+        return obj.model
+
+    def to_internal_value(self, data):
+        return ContentType.objects.get(model=data)
+
 class Progress(AbstractModel):
     value = models.IntegerField(default=0)
-    course = models.ForeignKey(Course, related_name='progress', on_delete=models.CASCADE)
     lesson = models.ForeignKey(Lesson, related_name='progress',
                                on_delete=models.CASCADE, blank=True, null=True)
+    unit = models.ForeignKey(Unit, related_name='progress', on_delete=models.CASCADE, blank=True, null=True)
     owner = models.ForeignKey(User, related_name='progress', on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, related_name='progress', on_delete=models.CASCADE)
+    completed_lessons = models.ManyToManyField(Lesson, related_name='progress_lessons')
 
     class Meta:
-        unique_together = ('lesson', 'owner',)
+        unique_together = ('course', 'owner',)
         ordering = ['created']
-
-    def __str__(self):
-        return '%d: %d' % (self.value, self.lesson)

@@ -1,7 +1,15 @@
-from .models import Course, Unit, Lesson, Lecture
-from rest_framework import viewsets, permissions
-from .serializers import (CourseSerializer, UnitSerializer, UnitDetailSerializer,
-                          LessonSerializer, CourseDetailSerializer, LectureSerializer)
+from rest_framework import permissions, status, viewsets
+from rest_framework.response import Response
+from django.shortcuts import get_object_or_404
+
+from atktut.questions.models import Question, Answer
+from atktut.questions.serializers import QuestionSerializer
+
+from .models import Course, Lecture, Lesson, Unit, Progress
+from .serializers import (CourseDetailSerializer, CourseSerializer,
+                          LectureSerializer, LessonSerializer,
+                          UnitDetailSerializer, UnitSerializer, ProgressSerializer)
+
 
 class LectureViewSet(viewsets.ModelViewSet):
     """
@@ -9,7 +17,15 @@ class LectureViewSet(viewsets.ModelViewSet):
     """
     queryset = Lecture.objects.all()
     serializer_class = LectureSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
+
+class ProgressViewSet(viewsets.ModelViewSet):
+    """
+    API endpoint that allows courses to be viewed or edited.
+    """
+    queryset = Progress.objects.all()
+    serializer_class = ProgressSerializer
+    permission_classes = (permissions.IsAuthenticated,)
 
 class CourseViewSet(viewsets.ModelViewSet):
     """
@@ -17,7 +33,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 class CourseDetailViewSet(viewsets.ModelViewSet):
     """
@@ -25,7 +41,7 @@ class CourseDetailViewSet(viewsets.ModelViewSet):
     """
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 class UnitViewSet(viewsets.ModelViewSet):
     """
@@ -33,7 +49,7 @@ class UnitViewSet(viewsets.ModelViewSet):
     """
     queryset = Unit.objects.all()
     serializer_class = UnitSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 class UnitDetailViewSet(viewsets.ModelViewSet):
     """
@@ -41,7 +57,7 @@ class UnitDetailViewSet(viewsets.ModelViewSet):
     """
     queryset = Unit.objects.all()
     serializer_class = UnitDetailSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
 class LessonViewSet(viewsets.ModelViewSet):
     """
@@ -49,7 +65,69 @@ class LessonViewSet(viewsets.ModelViewSet):
     """
     queryset = Lesson.objects.all()
     serializer_class = LessonSerializer
-    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
+    permission_classes = (permissions.IsAuthenticated,)
 
-    # def perform_create(self, serializer):
-    #     serializer.save(owner=self.request.user)
+    def retrieve(self, request, pk=None):
+        queryset = Lesson.objects.all()
+        lesson = get_object_or_404(queryset, pk=pk)
+        progress = None
+        try:
+            progress = Progress.objects.get(owner=request.user, course=lesson.course)
+        except Exception:
+            pass
+        if not progress and lesson.course:
+            progress = Progress.objects.create(
+                value=1,
+                unit=lesson.unit,
+                lesson=lesson,
+                owner=request.user,
+                ourse_id=lesson.course.id,
+            )
+        if progress:
+            progress.completed_lessons.add(lesson)
+        serializer = LessonSerializer(lesson)
+        return Response(serializer.data)
+
+    def create(self, request):
+        data = request.data
+        # mutable = data._mutable
+        # data._mutable = True
+        if data.get('content_type') == 'question':
+            serializer = QuestionSerializer(data=data)
+            if serializer.is_valid():
+                obj = Question.objects.create(**serializer.validated_data)
+                data['object_id'] = obj.pk
+                size = int(data.get('answers_size'))
+                if size and size > 0:
+                    # answers_get = lambda *keys: data['answers' + ''.join(['[%s]' % key for key in keys])]
+                    answers = data['answers']
+                    for i in range(size):
+                        # content = answers_get(str(i), 'content')
+                        # correct = answers_get(str(i), 'correct')
+                        content = answers[i].get('content')
+                        correct = bool(answers[i].get('correct'))
+                        Answer.objects.create(
+                            content=content,
+                            correct=correct,
+                            question=obj
+                        )
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif data.get('content_type') == 'lecture':
+            serializer = LectureSerializer(data=data)
+            if serializer.is_valid():
+                obj = Lecture.objects.create(**serializer.validated_data)
+                data['object_id'] = obj.pk
+            else:
+                return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        else:
+            return Response(data={'message': 'invalid content_type %s' % data.get('content_type')},
+                            status=status.HTTP_400_BAD_REQUEST)
+
+        # data._mutable = mutable
+        serializer = self.serializer_class(data=data)
+        if serializer.is_valid():
+            obj = Lesson.objects.create(**serializer.validated_data)
+            return Response(LessonSerializer(obj).data, status=status.HTTP_201_CREATED)
+
+        return Response(data={'message': 'invalid request'}, status=status.HTTP_400_BAD_REQUEST)
