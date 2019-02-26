@@ -1,6 +1,5 @@
 from rest_framework import permissions, status, viewsets
 from rest_framework.response import Response
-from django.shortcuts import get_object_or_404
 
 from atktut.questions.models import Question, Answer
 from atktut.questions.serializers import QuestionSerializer

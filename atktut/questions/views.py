@@ -2,12 +2,11 @@ from rest_framework import permissions, viewsets, status
 from rest_framework.response import Response
 from django.shortcuts import get_object_or_404
 from rest_framework.decorators import api_view, permission_classes
-import json
 from .models import Answer, Question
 from .serializers import AnswerSerializer, QuestionSerializer
 
 from atktut.course.models import Progress, Lesson
-from atktut.course.serializers import ProgressSerializer, LessonSerializer
+from atktut.course.serializers import LessonSerializer
 
 
 class QuestionViewSet(viewsets.ModelViewSet):
@@ -44,7 +43,7 @@ def progress(request):
 
     if not unit or not course or not lesson_id:
         return Response(data={'message': 'invalid request'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_400_BAD_REQUEST)
 
     current_index = list(query.values_list('id', flat=True)).index(int(lesson_id))
     lesson = query[current_index]
@@ -73,7 +72,7 @@ def progress(request):
         progress.total_lessons = total_lessons
         progress.unit_id = unit
         progress.save
-        if not lesson in progress.completed_lessons.all():
+        if lesson not in progress.completed_lessons.all():
             progress.completed_lessons.add(lesson)
     serializer = LessonSerializer(next_lesson)
     return Response(serializer.data)
@@ -87,7 +86,7 @@ def answer(request):
 
     if not question_id or not answers:
         return Response(data={'message': 'invalid request'},
-                            status=status.HTTP_400_BAD_REQUEST)
+                        status=status.HTTP_400_BAD_REQUEST)
 
     question = get_object_or_404(Question.objects.all(), pk=question_id)
     answers_query = Answer.objects.filter(question=question)
@@ -111,6 +110,6 @@ def answer(request):
 
     print(answers)
     if correct:
-        return Response(data={'message':'answer correct'})
+        return Response(data={'message': 'answer correct'})
 
-    return Response(data={'message':'answer incorrect'}, status=status.HTTP_400_BAD_REQUEST)
+    return Response(data={'message': 'answer incorrect'}, status=status.HTTP_400_BAD_REQUEST)
