@@ -67,27 +67,6 @@ class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
-    def retrieve(self, request, pk=None):
-        queryset = Lesson.objects.all()
-        lesson = get_object_or_404(queryset, pk=pk)
-        progress = None
-        try:
-            progress = Progress.objects.get(owner=request.user, course=lesson.course)
-        except Exception:
-            pass
-        if not progress and lesson.course:
-            progress = Progress.objects.create(
-                value=1,
-                unit=lesson.unit,
-                lesson=lesson,
-                owner=request.user,
-                ourse_id=lesson.course.id,
-            )
-        if progress:
-            progress.completed_lessons.add(lesson)
-        serializer = LessonSerializer(lesson)
-        return Response(serializer.data)
-
     def create(self, request):
         data = request.data
         # mutable = data._mutable
