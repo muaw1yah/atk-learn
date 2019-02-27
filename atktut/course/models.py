@@ -10,6 +10,7 @@ from atktut.users.models import User
 class Course(AbstractModel):
     name = models.CharField(max_length=256)
     description = models.CharField(max_length=1028, null=True)
+    hero_image = models.URLField(max_length=128, null=True, blank=True)
 
     class Meta:
         ordering = ['created']
@@ -73,7 +74,7 @@ class Lecture(AbstractModel):
         return ContentType.objects.get(model=data)
 
 class Progress(AbstractModel):
-    value = models.IntegerField(default=0)
+    total_lessons = models.IntegerField(default=0)
     lesson = models.ForeignKey(Lesson, related_name='progress',
                                on_delete=models.CASCADE, blank=True, null=True)
     unit = models.ForeignKey(Unit, related_name='progress', on_delete=models.CASCADE, blank=True, null=True)

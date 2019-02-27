@@ -18,7 +18,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'unit_count', 'progress', )
+        fields = ('id', 'name', 'description', 'unit_count', 'hero_image', 'progress', )
 
     def get_unit_count(self, obj):
         return obj.units.count()
@@ -31,13 +31,19 @@ class CourseSerializer(serializers.ModelSerializer):
             pass
 
 class UnitSerializer(serializers.ModelSerializer):
-    unit_progress = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
+    first_lesson = serializers.SerializerMethodField()
 
     class Meta:
         model = Unit
-        fields = ('id', 'name', 'order', 'description', 'course', 'unit_progress', )
+        fields = ('id', 'name', 'order', 'description', 'course', 'first_lesson', 'progress', )
 
-    def get_unit_progress(self, obj):
+    def get_first_lesson(self, obj):
+        lessons = obj.lessons.all()
+        if len(lessons) > 0:
+            return lessons[0].id
+
+    def get_progress(self, obj):
         request = self._context.get('request')
         if request and hasattr(request, 'user'):
             try:
@@ -75,13 +81,13 @@ class LessonSerializer(serializers.ModelSerializer):
 class UnitDetailSerializer(serializers.ModelSerializer):
     course = CourseSerializer(many=False, read_only=True)
     lessons = LessonSerializer(many=True, read_only=True)
-    unit_progress = serializers.SerializerMethodField()
+    progress = serializers.SerializerMethodField()
 
     class Meta:
         model = Unit
-        fields = ('id', 'name', 'order', 'lessons', 'description', 'course', 'unit_progress', )
+        fields = ('id', 'name', 'order', 'lessons', 'description', 'course', 'progress', )
 
-    def get_unit_progress(self, obj):
+    def get_progress(self, obj):
         request = self._context.get('request')
         if request and hasattr(request, 'user'):
             try:
@@ -91,8 +97,16 @@ class UnitDetailSerializer(serializers.ModelSerializer):
 
 class CourseDetailSerializer(serializers.ModelSerializer):
     units = UnitSerializer(many=True, read_only=True)
-    progress = ProgressSerializer(many=True, read_only=True)
+    progress = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'units', 'progress',)
+        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress',)
+
+    def get_progress(self, obj):
+        request = self._context.get('request')
+        if request and hasattr(request, 'user'):
+            try:
+                return ProgressSerializer(obj.progress.get(owner=request.user)).data
+            except Exception:
+                pass
