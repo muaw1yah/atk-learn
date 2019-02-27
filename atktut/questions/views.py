@@ -31,14 +31,13 @@ class AnswerViewSet(viewsets.ModelViewSet):
 @api_view(['POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def progress(request):
-    data = request.data
-    unit = data.get('unit')
-    course = data.get('course')
-    lesson_id = data.get('lesson')
+    unit = request.data.get('unit')
+    course = request.data.get('course')
+    lesson_id = request.data.get('lesson')
     user = request.user
     progress = None
     next_lesson = None
-    query = Lesson.objects.filter(unit_id=unit)
+    query = Lesson.objects.filter(unit_id=unit).order_by('order')
     total_lessons = query.count()
 
     if not unit or not course or not lesson_id:
@@ -48,23 +47,23 @@ def progress(request):
     current_index = list(query.values_list('id', flat=True)).index(int(lesson_id))
     lesson = query[current_index]
     try:
-        next_index = list(query.values_list('order', flat=True)).index(query[lesson].order + 1)
+        next_index = list(query.values_list('order', flat=True)).index(int(lesson.order) + 1)
         next_lesson = query[next_index]
     except Exception:
         pass
 
     try:
-        progress = Progress.objects.get(owner=user, course=course)
+        progress = Progress.objects.get(owner=user, course_id=course)
     except Exception:
         pass
 
     if not progress:
         progress = Progress.objects.create(
             total_lessons=total_lessons,
-            unit=unit,
-            lesson=lesson.id,
+            unit_id=unit,
+            lesson_id=lesson.id,
             owner=user,
-            course=course,
+            course_id=course,
         )
         progress.completed_lessons.add(lesson)
     else:
@@ -81,8 +80,10 @@ def progress(request):
 @api_view(['POST'])
 @permission_classes((permissions.IsAuthenticated, ))
 def answer(request):
-    question_id = request.data.get('question')
-    answers = request.data.get('answers')
+    question_id = request.data.get('question_id')
+    answers = request.data.get('answer')
+    unit_id = request.data.get('unit_id')
+    lesson_id = request.data.get('lesson_id')
 
     if not question_id or not answers:
         return Response(data={'message': 'invalid request'},
@@ -92,24 +93,25 @@ def answer(request):
     answers_query = Answer.objects.filter(question=question)
 
     correct = True
-    # selected_answers = []
     if not question.question_type == Question.BLANKQUESTION:
         answers = eval(answers)
+        for ans in answers_query:
+            if ans.correct and ans.id not in answers:
+                correct = False
 
     if question.question_type == Question.TRUEFALSE or question.question_type == Question.SINGLECHOICE:
         if len(answers) > 1:
-            print("invalid legnth is greater")
             correct = False
 
-    if not question.question_type == Question.BLANKQUESTION:
-        for ans in answers_query:
-            print(ans.id, ans.correct)
-            if ans.correct and ans.id not in answers:
-                print("invalid answer not in array")
-                correct = False
-
-    print(answers)
     if correct:
-        return Response(data={'message': 'answer correct'})
+        next_lesson = None
+        query = Lesson.objects.filter(unit_id=unit_id).order_by('order')
+        lesson = query[list(query.values_list('id', flat=True)).index(int(lesson_id))]
+        try:
+            next_lesson = query[list(query.values_list('order', flat=True)).index(int(lesson.order) + 1)]
+        except Exception:
+            pass
+        serializer = LessonSerializer(next_lesson)
+        return Response(serializer.data)
 
     return Response(data={'message': 'answer incorrect'}, status=status.HTTP_400_BAD_REQUEST)
