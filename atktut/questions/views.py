@@ -38,7 +38,7 @@ def progress(request):
     if not unit_id or not course_id or not lesson_id:
         return Response(data={'message': 'invalid request'},
                         status=status.HTTP_400_BAD_REQUEST)
-    
+
     progress = None
     query = Lesson.objects.filter(unit_id=unit_id).order_by('order')
     next_lesson = get_next_lesson(request.user, course_id, unit_id, lesson_id, query)
@@ -137,8 +137,9 @@ def get_next_lesson(user, course_id, unit_id, lesson_id, query=None):
         if not next_lesson:
             unit_query = Unit.objects.filter(course_id=course_id).order_by('order')
             unit = unit_query[list(unit_query.values_list('id', flat=True)).index(int(unit_id))]
-            next_unit = unit_query[list(unit_query.values_list('order', flat=True)).index(int(unit.order) + 1)]
-            
+            next_unit = unit_query[list(unit_query.values_list('order',
+                                                               flat=True)).index(int(unit.order) + 1)]
+
             if next_unit:
                 query = Lesson.objects.filter(unit_id=next_unit.id).order_by('order')
                 return query[0]
