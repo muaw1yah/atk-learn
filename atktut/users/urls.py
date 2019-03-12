@@ -7,7 +7,7 @@ router.register(r'users', UserDetailViewSet)
 router.register(r'users', UserCreateViewSet)
 
 user_list = UserViewSet.as_view({
-    'get': 'list'
+    'get': 'list',
 })
 
 register = UserCreateViewSet.as_view({

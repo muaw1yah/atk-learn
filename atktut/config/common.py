@@ -24,6 +24,7 @@ class Common(Configuration):
         'django_filters',            # for filtering rest endpoints
         'corsheaders',               # to allow cross origin
         'generic_relations',         # for generic relations serialization
+        'versatileimagefield',       # for image cropping and manipulation
 
         # Your apps
         'atktut.users',

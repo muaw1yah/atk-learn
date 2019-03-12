@@ -17,6 +17,7 @@ class Question(AbstractModel):
     )
     content = models.TextField()
     question_type = models.CharField(max_length=2, choices=QUESTION_TYPE)
+    hint = models.CharField(max_length=1028, blank=True, null=True)
     lesson = GenericRelation(Lesson, related_query_name='questions')
 
     def __str__(self):
