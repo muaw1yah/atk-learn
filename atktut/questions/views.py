@@ -126,11 +126,11 @@ def get_next_lesson(user, course_id, unit_id, lesson_id, query=None):
         )
         progress.completed_lessons.add(lesson_id)
     else:
+        progress.lesson_id = lesson_id
+        progress.total_lessons = query.count()
+        progress.unit_id = unit_id
+        progress.save
         if lesson not in progress.completed_lessons.all():
-            progress.lesson_id = lesson_id
-            progress.total_lessons = query.count()
-            progress.unit_id = unit_id
-            progress.save
             progress.completed_lessons.add(lesson)
     try:
         next_lesson = query[list(query.values_list('order', flat=True)).index(int(lesson.order) + 1)]

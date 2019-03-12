@@ -6,22 +6,21 @@ from atktut.questions.serializers import QuestionSerializer
 from generic_relations.relations import GenericRelatedField
 from .models import Course, Lecture, Lesson, Progress, Unit
 
-class ProgressSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = Progress
-        exclude = ('created', 'updated', 'owner', )
-
 
 class CourseSerializer(serializers.ModelSerializer):
     unit_count = serializers.SerializerMethodField()
+    lesson_count = serializers.SerializerMethodField()
     progress = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'unit_count', 'hero_image', 'progress', )
+        fields = ('id', 'name', 'description', 'unit_count', 'lesson_count', 'hero_image', 'progress', )
 
     def get_unit_count(self, obj):
         return obj.units.count()
+
+    def get_lesson_count(self, obj):
+        return obj.lessons_course.count()
 
     def get_progress(self, obj):
         request = self._context.get('request')
@@ -110,3 +109,16 @@ class CourseDetailSerializer(serializers.ModelSerializer):
                 return ProgressSerializer(obj.progress.get(owner=request.user)).data
             except Exception:
                 pass
+
+class ProgressSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Progress
+        exclude = ('created', 'updated', 'owner', )
+
+class ProgressDetailSerializer(serializers.ModelSerializer):
+    course = CourseSerializer(many=False, read_only=True)
+
+    class Meta:
+        model = Progress
+        read_only_fields = ('course',)
+        exclude = ('created', 'updated', 'owner', )

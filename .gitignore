@@ -25,6 +25,7 @@ wheels/
 *.egg
 MANIFEST
 .vscode
+media/
 
 # PyInstaller
 #  Usually these files are written by a python script from a template
