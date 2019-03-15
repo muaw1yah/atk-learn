@@ -9,8 +9,10 @@ from atktut.users.models import User
 
 class Course(AbstractModel):
     name = models.CharField(max_length=256)
-    description = models.CharField(max_length=1028, null=True)
+    short_description = models.CharField(max_length=256, null=True, blank=True)
+    description = models.CharField(max_length=2056, null=True, blank=True)
     hero_image = models.URLField(max_length=128, null=True, blank=True)
+    objectives = models.CharField(max_length=1028, null=True, blank=True)
 
     class Meta:
         ordering = ['created']
