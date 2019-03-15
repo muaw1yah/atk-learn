@@ -20,6 +20,7 @@ class Common(Configuration):
 
         # Third party apps
         'rest_framework',            # utilities for rest apis
+        'rest_framework.authtoken',
         'django_filters',            # for filtering rest endpoints
         'corsheaders',               # to allow cross origin
         'generic_relations',         # for generic relations serialization
