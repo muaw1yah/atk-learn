@@ -14,7 +14,8 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'unit_count', 'lesson_count', 'hero_image', 'progress', 'short_description', 'objectives')
+        fields = ('id', 'name', 'description', 'unit_count', 'lesson_count', 'hero_image', 'progress',
+                  'short_description', 'objectives')
 
     def get_unit_count(self, obj):
         return obj.units.count()
@@ -110,7 +111,8 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress', 'short_description', 'objectives')
+        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress',
+                  'short_description', 'objectives')
 
     def get_progress(self, obj):
         request = self._context.get('request')
@@ -125,7 +127,7 @@ class UnitInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'name', 'order', 'lessons', 'description', 'course' )
+        fields = ('id', 'name', 'order', 'lessons', 'description', 'course')
 
 class CourseInfoSerializer(serializers.ModelSerializer):
     units = UnitInfoSerializer(many=True, read_only=True)
@@ -133,7 +135,8 @@ class CourseInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress', 'short_description', 'objectives')
+        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress',
+                  'short_description', 'objectives')
 
     def get_progress(self, obj):
         request = self._context.get('request')
