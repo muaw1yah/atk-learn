@@ -14,7 +14,7 @@ class CourseSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'unit_count', 'lesson_count', 'hero_image', 'progress', )
+        fields = ('id', 'name', 'description', 'unit_count', 'lesson_count', 'hero_image', 'progress', 'short_description', 'objectives')
 
     def get_unit_count(self, obj):
         return obj.units.count()
@@ -55,6 +55,16 @@ class LectureSerializer(serializers.ModelSerializer):
     class Meta:
         model = Lecture
         fields = '__all__'
+
+class ShortLessonSerializer(serializers.ModelSerializer):
+    """
+    A `Lesson` serializer with a `GenericRelatedField` mapping all possible
+    models to their respective serializers.
+    """
+
+    class Meta:
+        model = Lesson
+        fields = ('id', 'name', 'order', 'description', 'unit', 'course')
 
 class LessonSerializer(serializers.ModelSerializer):
     """
@@ -100,7 +110,30 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress',)
+        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress', 'short_description', 'objectives')
+
+    def get_progress(self, obj):
+        request = self._context.get('request')
+        if request and hasattr(request, 'user'):
+            try:
+                return ProgressSerializer(obj.progress.get(owner=request.user)).data
+            except Exception:
+                pass
+
+class UnitInfoSerializer(serializers.ModelSerializer):
+    lessons = ShortLessonSerializer(many=True, read_only=True)
+
+    class Meta:
+        model = Unit
+        fields = ('id', 'name', 'order', 'lessons', 'description', 'course' )
+
+class CourseInfoSerializer(serializers.ModelSerializer):
+    units = UnitInfoSerializer(many=True, read_only=True)
+    progress = serializers.SerializerMethodField()
+
+    class Meta:
+        model = Course
+        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress', 'short_description', 'objectives')
 
     def get_progress(self, obj):
         request = self._context.get('request')
