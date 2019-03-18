@@ -6,7 +6,7 @@ from atktut.questions.serializers import QuestionSerializer
 
 from .models import Course, Lecture, Lesson, Unit, Progress
 from .serializers import (CourseDetailSerializer, CourseSerializer,
-                          LectureSerializer, LessonSerializer,
+                          CourseInfoSerializer, LectureSerializer, LessonSerializer,
                           UnitDetailSerializer, UnitSerializer, ProgressSerializer)
 
 
@@ -32,7 +32,7 @@ class CourseViewSet(viewsets.ModelViewSet):
     """
     queryset = Course.objects.all()
     serializer_class = CourseSerializer
-    permission_classes = (permissions.IsAuthenticated,)
+    permission_classes = (permissions.IsAuthenticatedOrReadOnly,)
 
 class CourseDetailViewSet(viewsets.ModelViewSet):
     """
@@ -41,6 +41,11 @@ class CourseDetailViewSet(viewsets.ModelViewSet):
     queryset = Course.objects.all()
     serializer_class = CourseDetailSerializer
     permission_classes = (permissions.IsAuthenticated,)
+
+class CourseInfoViewSet(viewsets.ModelViewSet):
+    queryset = Course.objects.all()
+    serializer_class = CourseInfoSerializer
+    permission_classes = (permissions.AllowAny, )
 
 class UnitViewSet(viewsets.ModelViewSet):
     """
