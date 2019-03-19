@@ -16,5 +16,5 @@ register = UserCreateViewSet.as_view({
 
 urlpatterns = [
     path(r'users/', user_list, name='user-list'),
-    # path(r'users/register/', register, name='register-user')
+    path(r'users/register/', register, name='register-user')
 ] + router.urls
