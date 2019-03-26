@@ -108,12 +108,16 @@ class UnitDetailSerializer(serializers.ModelSerializer):
 class CourseDetailSerializer(serializers.ModelSerializer):
     units = UnitSerializer(many=True, read_only=True)
     progress = serializers.SerializerMethodField()
+    lesson_count = serializers.SerializerMethodField()
 
     class Meta:
         model = Course
-        fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress',
+        fields = ('id', 'name', 'description', 'units', 'lesson_count', 'hero_image', 'progress',
                   'short_description', 'objectives')
 
+    def get_lesson_count(self, obj):
+        return obj.lessons_course.count()
+        
     def get_progress(self, obj):
         request = self._context.get('request')
         if request and hasattr(request, 'user'):
