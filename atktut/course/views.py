@@ -71,6 +71,12 @@ class LessonViewSet(viewsets.ModelViewSet):
     serializer_class = LessonSerializer
     permission_classes = (permissions.IsAuthenticated,)
 
+    # def update(self, request, pk):
+    #     print(request.data)
+    #     data = request.data
+
+    #     return Response(data={'message': 'invalid request'}, status=status.HTTP_400_BAD_REQUEST)
+
     def create(self, request):
         data = request.data
         # mutable = data._mutable

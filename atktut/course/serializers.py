@@ -3,9 +3,9 @@ from rest_framework import serializers
 
 from atktut.questions.models import Question
 from atktut.questions.serializers import QuestionSerializer
-from generic_relations.relations import GenericRelatedField
+from rest_framework.fields import Field
 from .models import Course, Lecture, Lesson, Progress, Unit
-
+from drf_writable_nested import WritableNestedModelSerializer
 
 class CourseSerializer(serializers.ModelSerializer):
     unit_count = serializers.SerializerMethodField()
@@ -67,26 +67,67 @@ class ShortLessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ('id', 'name', 'order', 'description', 'unit', 'course')
 
-class LessonSerializer(serializers.ModelSerializer):
+class UnitObjectSerializer(Field):
+    def to_representation(self, value):
+        if isinstance(value, Lecture):
+            serializer = LectureSerializer(value)
+        elif isinstance(value, Question):
+            serializer = QuestionSerializer(value)
+        else:
+            raise Exception('Unexpected type of tagged object')
+        return serializer.data
+
+    def to_internal_value(self, data):
+        # you need to pass some identity to figure out which serializer to use
+        # supose you'll add 'content_type' key to your json
+        content_type = data.pop('content_type')
+
+        if content_type == 'question':
+            serializer = QuestionSerializer(data=data)
+        elif content_type == 'lecture':
+            serializer = LectureSerializer(data=data)
+        else:
+            raise serializers.ValidationError('no content_type provided')
+
+        if serializer.is_valid():
+            obj = serializer.save()
+        else:
+            raise serializers.ValidationError(serializer.errors)
+
+        return obj
+
+class LessonSerializer(WritableNestedModelSerializer):
     """
     A `Lesson` serializer with a `GenericRelatedField` mapping all possible
     models to their respective serializers.
     """
-    unit_object = GenericRelatedField({
-        Lecture: LectureSerializer(),
-        Question: QuestionSerializer()
-    }, read_only=True)
+    unit_object = UnitObjectSerializer()
 
     class Meta:
         model = Lesson
         fields = ('id', 'name', 'order', 'description', 'unit',
                   'content_type', 'course', 'object_id', 'unit_object',)
-        read_only_fields = ('unit_object',)
 
     content_type = serializers.SlugRelatedField(
         queryset=ContentType.objects.all(),
         slug_field='model',
     )
+
+    # def update(self, instance, validated_data):
+    #     unit_object_data = validated_data.pop('unit_object')
+    #     unit_object = (instance.unit_object)
+
+    #     instance.order = validated_data.get('order', instance.order)
+    #     instance.description = validated_data.get('description', instance.description)
+    #     instance.name = validated_data.get('name', instance.name)
+    #     instance.save()
+
+    #     if instance.content_type == 'question':
+    #         unit_object.content = unit_object_data.content
+    #     else:
+    #         unit_object.html = unit_object_data.html
+    #     unit_object.save()
+    #     return instance
 
 class UnitDetailSerializer(serializers.ModelSerializer):
     course = CourseSerializer(many=False, read_only=True)
@@ -117,7 +158,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
 
     def get_lesson_count(self, obj):
         return obj.lessons_course.count()
-        
+
     def get_progress(self, obj):
         request = self._context.get('request')
         if request and hasattr(request, 'user'):
