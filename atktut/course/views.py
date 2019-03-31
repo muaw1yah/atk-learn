@@ -88,7 +88,7 @@ class LessonViewSet(viewsets.ModelViewSet):
                 data['object_id'] = obj.pk
                 size = 0
                 try:
-                    size = int(data.get('answers_size'))
+                    size = int(data.get('answers_size', 0))
                 except Exception:
                     pass
                 if size and size > 0:
