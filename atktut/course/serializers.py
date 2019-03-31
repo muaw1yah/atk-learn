@@ -3,7 +3,6 @@ from rest_framework import serializers
 
 from atktut.questions.models import Question
 from atktut.questions.serializers import QuestionSerializer
-from rest_framework.fields import Field
 from .models import Course, Lecture, Lesson, Progress, Unit
 from drf_writable_nested import WritableNestedModelSerializer
 
@@ -67,7 +66,7 @@ class ShortLessonSerializer(serializers.ModelSerializer):
         model = Lesson
         fields = ('id', 'name', 'order', 'description', 'unit', 'course')
 
-class UnitObjectSerializer(Field):
+class UnitObjectSerializer(WritableNestedModelSerializer):
     def to_representation(self, value):
         if isinstance(value, Lecture):
             serializer = LectureSerializer(value)
@@ -101,7 +100,7 @@ class LessonSerializer(WritableNestedModelSerializer):
     A `Lesson` serializer with a `GenericRelatedField` mapping all possible
     models to their respective serializers.
     """
-    unit_object = UnitObjectSerializer()
+    unit_object = UnitObjectSerializer(read_only=True)
 
     class Meta:
         model = Lesson
