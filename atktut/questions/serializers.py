@@ -1,11 +1,12 @@
 from rest_framework import serializers
 from .models import Question, Answer
+from drf_writable_nested import WritableNestedModelSerializer
 
 class AnswerSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Answer
-        exclude = ('correct',)
+        fields = ('id', 'content', 'correct', 'question')
 
     # def __init__(self, *args, **kwargs):
     #     super(AnswerSerializer, self).__init__(*args, **kwargs)
@@ -17,7 +18,7 @@ class AnswerSerializer(serializers.ModelSerializer):
     #             for other in existing - included:
     #                 self.fields.pop(other)
 
-class QuestionSerializer(serializers.ModelSerializer):
+class QuestionSerializer(WritableNestedModelSerializer):
     answers = AnswerSerializer(many=True, read_only=True)
 
     class Meta:
