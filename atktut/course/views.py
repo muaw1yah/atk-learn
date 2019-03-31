@@ -86,7 +86,11 @@ class LessonViewSet(viewsets.ModelViewSet):
             if serializer.is_valid():
                 obj = Question.objects.create(**serializer.validated_data)
                 data['object_id'] = obj.pk
-                size = int(data.get('answers_size'))
+                size = 0
+                try:
+                    size = int(data.get('answers_size', 0))
+                except Exception:
+                    pass
                 if size and size > 0:
                     # answers_get = lambda *keys: data['answers' + ''.join(['[%s]' % key for key in keys])]
                     answers = data['answers']
