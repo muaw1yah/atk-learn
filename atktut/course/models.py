@@ -83,6 +83,7 @@ class Progress(AbstractModel):
     owner = models.ForeignKey(User, related_name='progress', on_delete=models.CASCADE)
     course = models.ForeignKey(Course, related_name='progress', on_delete=models.CASCADE)
     completed_lessons = models.ManyToManyField(Lesson, related_name='progress_lessons')
+    completed_units = models.ManyToManyField(Unit, related_name='progress_units')
 
     class Meta:
         unique_together = ('course', 'owner',)

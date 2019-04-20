@@ -62,12 +62,39 @@ def progress(request):
         progress.lesson_id = lesson_id
         progress.total_lessons = query.count()
         progress.unit_id = unit_id
-        progress.save
+        progress.save()
         if lesson not in progress.completed_lessons.all():
             progress.completed_lessons.add(lesson)
+
+    # Update Completed unit
+    lessons_comp = 0
+    completed_lessons = progress.completed_lessons.all()
+    for lesson in query:
+        if lesson in completed_lessons:
+            lessons_comp += 1
+    if query.count() == lessons_comp:
+        progress.completed_units.add(unit_id)
+
     serializer = LessonSerializer(next_lesson)
     return Response(serializer.data)
 
+@api_view(['POST'])
+@permission_classes((permissions.IsAuthenticated, ))
+def complete_unit(request):
+    progress_id = request.data.get('progress_id')
+    unit_id = request.data.get('unit_id')
+    user = request.user
+
+    if not progress_id or not unit_id:
+        return Response(data={'message': 'invalid request'},
+                        status=status.HTTP_400_BAD_REQUEST)
+
+    progress = get_object_or_404(Progress.objects.all(), pk=progress_id)
+    if progress.owner != user:
+        return Response(data={'message': 'invalid request'},
+                        status=status.HTTP_400_BAD_REQUEST)
+    progress.completed_units.add(unit_id)
+    progress.save()
 
 @api_view(['POST'])
 @permission_classes((permissions.IsAuthenticated, ))
@@ -83,18 +110,21 @@ def answer(request):
                         status=status.HTTP_400_BAD_REQUEST)
 
     question = get_object_or_404(Question.objects.all(), pk=question_id)
-    answers_query = Answer.objects.filter(question=question)
+    answers_query = Answer.objects.filter(question=question).filter(correct=True)
 
     correct = True
     if not question.question_type == Question.BLANKQUESTION:
         answers = eval(answers)
         for ans in answers_query:
-            if ans.correct and ans.id not in answers:
+            if ans.id not in answers:
                 correct = False
 
     if question.question_type == Question.TRUEFALSE or question.question_type == Question.SINGLECHOICE:
         if len(answers) > 1:
             correct = False
+
+    if question.question_type == Question.MULTICHOICE and len(answers_query) != len(answers):
+        correct = False
 
     if correct:
         next_lesson = get_next_lesson(request.user, course_id, unit_id, lesson_id)
@@ -105,7 +135,6 @@ def answer(request):
 
 
 def get_next_lesson(user, course_id, unit_id, lesson_id, query=None):
-
     if not query:
         query = Lesson.objects.filter(unit_id=unit_id).order_by('order')
     lesson = query[list(query.values_list('id', flat=True)).index(int(lesson_id))]
@@ -129,7 +158,7 @@ def get_next_lesson(user, course_id, unit_id, lesson_id, query=None):
         progress.lesson_id = lesson_id
         progress.total_lessons = query.count()
         progress.unit_id = unit_id
-        progress.save
+        progress.save()
         if lesson not in progress.completed_lessons.all():
             progress.completed_lessons.add(lesson)
     try:
