@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from versatileimagefield.serializers import VersatileImageFieldSerializer
+# from versatileimagefield.serializers import VersatileImageFieldSerializer
 
 from atktut.course.serializers import ProgressDetailSerializer
 
