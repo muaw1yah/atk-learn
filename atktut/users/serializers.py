@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from versatileimagefield.serializers import VersatileImageFieldSerializer
+# from versatileimagefield.serializers import VersatileImageFieldSerializer
 
 from atktut.course.serializers import ProgressDetailSerializer
 
@@ -8,19 +8,19 @@ from .models import User
 
 class UserSerializer(serializers.ModelSerializer):
     progress = ProgressDetailSerializer(many=True, read_only=True)
-    headshot = VersatileImageFieldSerializer(
-        sizes=[
-            ('full_size', 'url'),
-            ('avatar', 'crop__200x200'),
-            ('small_square_crop', 'crop__50x50')
-        ],
-        required=False
-    )
+    # headshot = VersatileImageFieldSerializer(
+    #     sizes=[
+    #         ('full_size', 'url'),
+    #         ('avatar', 'crop__200x200'),
+    #         ('small_square_crop', 'crop__50x50')
+    #     ],
+    #     required=False
+    # )
 
     class Meta:
         model = User
         fields = ('username', 'first_name', 'last_name', 'email', 'id', 'location',
-                  'tagline', 'phone', 'email', 'dob', 'gender', 'headshot', 'progress', )
+                  'tagline', 'phone', 'email', 'dob', 'gender', 'progress', )
         read_only_fields = ('username', )
 
 
