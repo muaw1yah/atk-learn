@@ -14,7 +14,7 @@ class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ('id', 'name', 'description', 'unit_count', 'lesson_count', 'hero_image', 'progress',
-                  'short_description', 'objectives')
+                  'short_description', 'objectives', 'active')
 
     def get_unit_count(self, obj):
         return obj.units.count()
@@ -35,7 +35,7 @@ class UnitSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'name', 'order', 'description', 'course', 'first_lesson', 'progress', )
+        fields = ('id', 'name', 'order', 'description', 'course', 'first_lesson', 'progress', 'active')
 
     def get_first_lesson(self, obj):
         lessons = obj.lessons.all()
@@ -135,7 +135,7 @@ class UnitDetailSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'name', 'order', 'lessons', 'description', 'course', 'progress', )
+        fields = ('id', 'name', 'order', 'lessons', 'description', 'course', 'progress', 'active')
 
     def get_progress(self, obj):
         request = self._context.get('request')
@@ -153,7 +153,7 @@ class CourseDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ('id', 'name', 'description', 'units', 'lesson_count', 'hero_image', 'progress',
-                  'short_description', 'objectives')
+                  'short_description', 'objectives', 'active')
 
     def get_lesson_count(self, obj):
         return obj.lessons_course.count()
@@ -171,7 +171,7 @@ class UnitInfoSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = Unit
-        fields = ('id', 'name', 'order', 'lessons', 'description', 'course')
+        fields = ('id', 'name', 'order', 'lessons', 'description', 'course', 'active')
 
 class CourseInfoSerializer(serializers.ModelSerializer):
     units = UnitInfoSerializer(many=True, read_only=True)
@@ -180,7 +180,7 @@ class CourseInfoSerializer(serializers.ModelSerializer):
     class Meta:
         model = Course
         fields = ('id', 'name', 'description', 'units', 'hero_image', 'progress',
-                  'short_description', 'objectives')
+                  'short_description', 'objectives', 'active')
 
     def get_progress(self, obj):
         request = self._context.get('request')

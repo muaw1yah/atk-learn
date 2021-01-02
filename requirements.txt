@@ -20,6 +20,7 @@ django-filter==2.1.0
 django-cors-headers==2.4.0
 rest-framework-generic-relations==1.2.1
 djangorestframework-simplejwt==4.1.0
+PyJWT==v1.7.1
 drf-writable-nested==0.5.1
 
 # Developer Tools
